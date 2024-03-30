@@ -6,7 +6,12 @@ As such, they do not have a commit history associated with them directly.
 
 For each project, I made consistent commits & pushes throughout the project deadlines
 
+## Commit History
+
 Project -1 (intro): 8 Commits between 1/17/24 and 1/27/24
+
 Project 0 (tucp & tuls): 22 commits between 1/27/24 and 2/6/24
+
 Project 1 (shell): 25 commits between 2/7/24 and 3/13/24
+
 Project 2 (synchronization): 10 commits between 3/16/24 and 4/3/24
