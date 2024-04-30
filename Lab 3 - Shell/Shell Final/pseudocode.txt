@@ -1,0 +1,130 @@
+Shell Pseudocode:
+
+Shell.c:
+
+arr_size(Take in initial array, file flags, pipenum counter):
+    while(initial array != null){
+        if(<)
+            Flag for redirection in = 1
+        if(>)
+            Flag for redirection out = 1
+        if(|)
+            Counter for pipes += 1
+        size_arr++
+    }    
+    return size_arr
+
+builtins(Take in new command array, shell flag)
+    if(command = built-in)
+        Call the appropriate function from built-in file
+        return true
+    else
+        return false
+
+execute_command(Take in new command array & size, file flags, sleep flag, array of pipe locations & size)
+    Set size for for loop (are there pipes or not)
+    Create array of n-1 pipes
+    for(size of loop set above)
+        fork()
+        if(failed)
+            print error
+            exit failure
+        if(child)
+            [Redirection by dup2()]
+            if(redirection in flag)
+                set file ID
+                dup2() file and standard in
+                close file
+            if(redirection out flag)
+                set file ID
+                dup2() file and standard out
+                close file
+            if(pipes)
+                if(first pipe)
+                    dup2() to change write end of the pipe
+                    close necessary ends
+                if(last pipe)
+                    dup2() to change read end of the pipe
+                    close necessary ends
+                else
+                    dup2() to change write end of the pipe
+                    dup2() to change write end of the pipe
+                    close necessary ends
+            [Parsing for input path]
+            if(./)
+                pass on
+            if(/)
+                pass on
+            else
+                parse PATH environment variable by :
+                for(size of PATH)
+                    test each tokenized item with the command given
+                    if(it works)
+                        break
+                    else(continue)
+                    if(nothing works)
+                        print error
+                        exit failure
+            [Parsing for input array]
+            if(no pipes)
+                Create new array
+                Set first value to executable
+                for(the rest)
+                    copy from initial input array to new input array
+                null terminate input array
+            else
+                Create new array
+                Set first value to executable
+                for(the rest)
+                    if(pipe)
+                        add NULL
+                    else
+                        copy from initial input array to new input array
+                null terminate input array
+            execv(executable, input array)
+        else [Parent]
+            Close all pipe ends with a for loop
+            if(not a background process)
+                wait(NULL)
+
+main():
+    while(true)
+        Read in from command line --> use parse()
+        initialize all needed variables, arrays
+        arr_size(initial array, file flags, pipenum counter)
+        for(size of parsed array)
+            if(< or > or filename)
+                don't add to new array
+            if(|)
+                don't add to new array
+                mark location in pipeLoc array
+            if(&)
+                don't add to new array
+                sleep flag = true
+            else
+                add to new array
+                size_arr++
+        if(builtins() == false)
+            execute_command()
+    exit success
+----------------------------------------------------------------------------------------------------
+Builtins.C:
+
+help()
+    print out all built-in functions, their functionality, and the arguments they take in
+
+exit()
+    set the while loop to false, enables to program to exit
+
+cd()
+    Take in an extra argument that is used as the path to navigate to
+    Use chdir(path) to navigate to the specified directory
+    return error if chdir() fails/if the specified directory does not exist
+
+pwd()
+    Use getcwd() to retrieve the current working directory
+    check that value isn't NULL/that getcwd() did not fail
+    printed the current working directory        
+
+wait()
+    calls waitpid(-1, NULL, 0) to wait until all child processes are completed
